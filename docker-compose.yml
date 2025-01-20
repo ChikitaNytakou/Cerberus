@@ -1,0 +1,34 @@
+﻿services:
+  web:
+    build: .
+    container_name: byebye
+    ports:
+      - "5000:80"  # Map port 80 in the container to port 5000 on the host
+    depends_on:
+      - postgres
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: "http://+:80"
+
+  postgres:
+    image: postgres:15
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 12345678
+      POSTGRES_DB: byebye
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  adminer:
+    image: adminer
+    container_name: adminer
+    ports:
+      - "8080:8080"  # Adminer will be accessible on port 8080
+    depends_on:
+      - postgres
+
+volumes:
+  postgres-data:
