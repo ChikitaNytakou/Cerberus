@@ -1,34 +1,45 @@
 ﻿services:
-  web:
-    build: .
-    container_name: byebye
-    ports:
-      - "5000:80"  # Map port 80 in the container to port 5000 on the host
-    depends_on:
-      - postgres
-    environment:
-      ASPNETCORE_ENVIRONMENT: Development
-      ASPNETCORE_URLS: "http://+:80"
-
   postgres:
     image: postgres:15
-    container_name: postgres-db
+    container_name: postgres
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 12345678
-      POSTGRES_DB: byebye
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
+      POSTGRES_DB: ByeBye
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d ByeBye -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - app-network
 
   adminer:
     image: adminer
     container_name: adminer
     ports:
-      - "8080:8080"  # Adminer will be accessible on port 8080
+      - "8080:8080"
     depends_on:
       - postgres
+    networks:
+      - app-network
 
-volumes:
-  postgres-data:
+  web:
+    build: .
+    container_name: byebye
+    ports:
+      - "5000:80"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: "http://+:80"
+      ConnectionStrings__DefaultConnection: "Host=postgres;Database=ByeBye;Username=postgres;Password=12345678"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
