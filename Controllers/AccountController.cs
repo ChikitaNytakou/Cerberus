@@ -124,5 +124,51 @@ namespace ByeBye.Controllers
             await signInManager.SignOutAsync();
             return RedirectToAction("index", "home");
         }
+
+        [Authorize]
+        [HttpGet]
+        public IActionResult ChangePassword()
+        {
+            return View();
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                //fetch the User Details
+                var user = await userManager.GetUserAsync(User);
+                if (user == null)
+                {
+                    //If User does not exists, redirect to the Login Page
+                    return RedirectToAction("Login", "Account");
+                }
+
+                // ChangePasswordAsync Method changes the user password
+                var result = await userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
+
+                // The new password did not meet the complexity rules or the current password is incorrect.
+                // Add these errors to the ModelState and rerender ChangePassword view
+                if (result.Succeeded)
+                {
+                    // Upon successfully changing the password refresh sign-in cookie
+                    await signInManager.RefreshSignInAsync(user);
+
+                    //Then redirect the user to the ChangePasswordConfirmation view
+                    return RedirectToAction("index", "home");
+                }
+                else
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                }
+            }
+
+            return View(model);
+        }
     }
 }
