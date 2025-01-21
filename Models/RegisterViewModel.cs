@@ -4,6 +4,10 @@ namespace ByeBye.Models
     public class RegisterViewModel
     {
         [Required]
+        [Display(Name = "Логин (никнейм)")]
+        public string UserName { get; set; }
+
+        [Required]
         [EmailAddress]
         public string Email { get; set; }
 

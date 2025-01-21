@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ByeBye.Controllers
 {
@@ -36,7 +37,7 @@ namespace ByeBye.Controllers
                 // Copy data from RegisterViewModel to IdentityUser
                 var user = new IdentityUser
                 {
-                    UserName = model.Email,
+                    UserName = model.UserName,
                     Email = model.Email
                 };
 
@@ -63,8 +64,9 @@ namespace ByeBye.Controllers
         }
 
         [HttpGet]
-        public IActionResult Login()
+        public IActionResult Login(string? ReturnUrl = null)
         {
+            ViewData["ReturnUrl"] = ReturnUrl;
             return View();
         }
 
@@ -74,24 +76,38 @@ namespace ByeBye.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+                var user = await userManager.Users.SingleOrDefaultAsync(u => u.UserName == model.Login);
 
-                if (result.Succeeded)
+                if (user != null)
                 {
-                    // Handle successful login
-                    return RedirectToAction(nameof(HomeController.Index), "Home");
-                }
-                if (result.RequiresTwoFactor)
-                {
-                    // Handle two-factor authentication case
-                }
-                if (result.IsLockedOut)
-                {
-                    // Handle lockout scenario
+                    var result = await signInManager.PasswordSignInAsync(model.Login, model.Password, model.RememberMe, lockoutOnFailure: false);
+
+                    if (result.Succeeded)
+                    {
+                        // Handle successful login
+
+                        // Check if the ReturnUrl is not null and is a local URL
+                        if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
+                        {
+                            return Redirect(model.ReturnUrl);
+                        }
+                        else
+                        {
+                            // Redirect to default page
+                            return RedirectToAction("Index", "Home");
+                        }
+                    }
+                    if (result.RequiresTwoFactor)
+                    {
+                        // Handle two-factor authentication case
+                    }
+                    if (result.IsLockedOut)
+                    {
+                        // Handle lockout scenario
+                    }
                 }
                 else
                 {
-                    TempData["ErrorMessage"] = "Неверный логин или пароль.";
                     // Handle failure
                     ModelState.AddModelError(string.Empty, "Invalid login attempt.");
                     return View(model);
