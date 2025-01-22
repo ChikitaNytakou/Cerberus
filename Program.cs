@@ -12,15 +12,8 @@ var connectionString = builder.Configuration.GetConnectionString("IdentityConnec
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString));
 
-// Configure the Application Cookie settings
-builder.Services.ConfigureApplicationCookie(options =>
-{
-    // If the LoginPath isn't set, ASP.NET Core defaults the path to /Account/Login.
-    options.LoginPath = "/Account/Login"; // Set your login path here
-});
-
 //Configuration Identity Services
-builder.Services.AddIdentity<IdentityUser, IdentityRole>(
+builder.Services.AddIdentity<User, IdentityRole>(
     options =>
     {
         // Password settings
@@ -35,6 +28,22 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(
     })
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders(); ;
+
+// Configure the Application Cookie settings
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    // If the LoginPath isn't set, ASP.NET Core defaults the path to /Account/Login.
+    options.LoginPath = "/Account/Login"; // Set your login path here
+});
+
+builder.Services.Configure<SecurityStampValidatorOptions>(options =>
+{
+    options.ValidationInterval = TimeSpan.Zero; // Проверка SecurityStamp на каждом запросе
+});
+
+
+// Добавление Middleware
+//builder.Services.AddTransient<PasswordExpirationMiddleware>();
 
 var app = builder.Build();
 
@@ -53,6 +62,8 @@ app.UseRouting();
 
 //Configuring Authentication Middleware to the Request Pipeline
 app.UseAuthentication();
+// Добавление Middleware в конвейер
+app.UseMiddleware<PasswordExpirationMiddleware>();
 app.UseAuthorization();
 
 app.MapControllerRoute(

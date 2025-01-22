@@ -9,15 +9,15 @@ namespace ByeBye.Controllers
     public class AccountController : Controller
     {
         //userManager will hold the UserManager instance
-        private readonly UserManager<IdentityUser> userManager;
+        private readonly UserManager<User> userManager;
 
         //signInManager will hold the SignInManager instance
-        private readonly SignInManager<IdentityUser> signInManager;
+        private readonly SignInManager<User> signInManager;
 
         //Both UserManager and SignInManager services are injected into the AccountController
         //using constructor injection
-        public AccountController(UserManager<IdentityUser> userManager,
-            SignInManager<IdentityUser> signInManager)
+        public AccountController(UserManager<User> userManager,
+            SignInManager<User> signInManager)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
@@ -34,11 +34,14 @@ namespace ByeBye.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Copy data from RegisterViewModel to IdentityUser
-                var user = new IdentityUser
+                // Copy data from RegisterViewModel to User
+                var user = new User
                 {
                     UserName = model.UserName,
-                    Email = model.Email
+                    Email = model.Email,
+                    SurName = model.SurName,
+                    FirstName = model.FirstName,
+                    FatherName = model.FatherName
                 };
 
                 // Store user data in AspNetUsers database table
@@ -84,6 +87,9 @@ namespace ByeBye.Controllers
 
                     if (result.Succeeded)
                     {
+                        // Обновляем SecurityStamp
+                        await userManager.UpdateSecurityStampAsync(user);
+
                         // Handle successful login
 
                         // Check if the ReturnUrl is not null and is a local URL
@@ -153,6 +159,9 @@ namespace ByeBye.Controllers
                 // Add these errors to the ModelState and rerender ChangePassword view
                 if (result.Succeeded)
                 {
+                    // Обновляем дату последнего изменения пароля
+                    user.LockoutEnd = DateTime.UtcNow;
+
                     // Upon successfully changing the password refresh sign-in cookie
                     await signInManager.RefreshSignInAsync(user);
 
@@ -169,6 +178,25 @@ namespace ByeBye.Controllers
             }
 
             return View(model);
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        [HttpGet]
+        public async Task<IActionResult> IsUserNameAvailable(string userName)
+        {
+            //Check If the UserName Id is Already in the Database
+            //var user = await userManager.FindByNameAsync(userName);
+            var user = await userManager.Users.SingleOrDefaultAsync(u => u.UserName == userName);
+
+            if (user == null)
+            {
+                return Json(true);
+            }
+            else
+            {
+                return Json($"UserName {userName} is already in use.");
+            }
         }
     }
 }
