@@ -23,7 +23,7 @@ builder.Services.AddIdentity<User, IdentityRole>(
         options.Password.RequireUppercase = true;
         options.Password.RequireLowercase = true;
         options.Password.RequiredUniqueChars = 4;
-
+        options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
         // Other settings can be configured here
     })
     .AddEntityFrameworkStores<ApplicationDbContext>()

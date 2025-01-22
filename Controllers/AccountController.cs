@@ -14,13 +14,16 @@ namespace ByeBye.Controllers
         //signInManager will hold the SignInManager instance
         private readonly SignInManager<User> signInManager;
 
+        private readonly RoleManager<IdentityRole> roleManager;
+        
         //Both UserManager and SignInManager services are injected into the AccountController
         //using constructor injection
         public AccountController(UserManager<User> userManager,
-            SignInManager<User> signInManager)
+            SignInManager<User> signInManager, RoleManager<IdentityRole> roleManager)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
+            this.roleManager = roleManager;
         }
 
         [HttpGet]
@@ -51,6 +54,14 @@ namespace ByeBye.Controllers
                 // SignInManager and redirect to index action of HomeController
                 if (result.Succeeded)
                 {
+                    // If the user is signed in and in the Admin role, then it is
+                    // the Admin user that is creating a new user. 
+                    // So redirect the Admin user to ListUsers action of Administration Controller
+                    if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                    {
+                        return RedirectToAction("ListUsers", "Account");
+                    }
+
                     await signInManager.SignInAsync(user, isPersistent: false);
                     return RedirectToAction("index", "home");
                 }
@@ -83,13 +94,13 @@ namespace ByeBye.Controllers
 
                 if (user != null)
                 {
+                    // Обновляем SecurityStamp
+                    await userManager.UpdateSecurityStampAsync(user);
+
                     var result = await signInManager.PasswordSignInAsync(model.Login, model.Password, model.RememberMe, lockoutOnFailure: false);
 
                     if (result.Succeeded)
                     {
-                        // Обновляем SecurityStamp
-                        await userManager.UpdateSecurityStampAsync(user);
-
                         // Handle successful login
 
                         // Check if the ReturnUrl is not null and is a local URL
@@ -196,6 +207,132 @@ namespace ByeBye.Controllers
             else
             {
                 return Json($"UserName {userName} is already in use.");
+            }
+        }
+
+        [HttpGet]
+        public IActionResult ListUsers()
+        {
+            var users = userManager.Users;
+            return View(users);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ListRoles()
+        {
+            List<IdentityRole> roles = await roleManager.Roles.ToListAsync();
+            return View(roles);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> EditUser(string UserId)
+        {
+            //First Fetch the User Details by UserId
+            var user = await userManager.FindByIdAsync(UserId);
+
+            //Check if User Exists in the Database
+            if (user == null)
+            {
+                ViewBag.ErrorMessage = $"User with Id = {UserId} cannot be found";
+                return View("NotFound");
+            }
+
+            // GetClaimsAsync retunrs the list of user Claims
+            var userClaims = await userManager.GetClaimsAsync(user);
+
+            // GetRolesAsync returns the list of user Roles
+            var userRoles = await userManager.GetRolesAsync(user);
+
+            //Store all the information in the EditUserViewModel instance
+            var model = new EditUserViewModel
+            {
+                Id = user.Id,
+                Email = user.Email,
+                UserName = user.UserName,
+                FirstName = user.FirstName,
+                FatherName = user.FatherName,
+                Roles = userRoles
+            };
+
+            //Pass the Model to the View
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditUser(EditUserViewModel model)
+        {
+            //First Fetch the User by Id from the database
+            var user = await userManager.FindByIdAsync(model.Id);
+
+            //Check if the User Exists in the database
+            if (user == null)
+            {
+                //If the User does not exists in the database, then return Not Found Error View
+                ViewBag.ErrorMessage = $"User with Id = {model.Id} cannot be found";
+                return View("NotFound");
+            }
+            else
+            {
+                //If the User Exists, then proceed and update the data
+                //Populate the user instance with the data from EditUserViewModel
+                user.Email = model.Email;
+                user.UserName = model.UserName;
+                user.FirstName = model.FirstName;
+                user.FatherName = model.FatherName;
+
+                //UpdateAsync Method will update the user data in the AspNetUsers Identity table
+                var result = await userManager.UpdateAsync(user);
+
+                if (result.Succeeded)
+                {
+                    //Once user data updated redirect to the ListUsers view
+                    return RedirectToAction("ListUsers");
+                }
+                else
+                {
+                    //In case any error, stay in the same view and show the model validation error
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error.Description);
+                    }
+                }
+
+                return View(model);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteUser(string UserId)
+        {
+            //First Fetch the User you want to Delete
+            var user = await userManager.FindByIdAsync(UserId);
+
+            if (user == null)
+            {
+                // Handle the case where the user wasn't found
+                ViewBag.ErrorMessage = $"User with Id = {UserId} cannot be found";
+                return View("NotFound");
+            }
+            else
+            {
+                //Delete the User Using DeleteAsync Method of UserManager Service
+                var result = await userManager.DeleteAsync(user);
+
+                if (result.Succeeded)
+                {
+                    // Handle a successful delete
+                    return RedirectToAction("ListUsers");
+                }
+                else
+                {
+                    // Handle failure
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error.Description);
+                    }
+                }
+
+                return View("ListUsers");
             }
         }
     }

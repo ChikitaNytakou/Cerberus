@@ -35,6 +35,22 @@
                             <a class="nav-link text-dark" asp-controller="Home" asp-action="NonSecureMethod">Non Secure</a>
                         </li>
                     </ul>
+                    @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+                               data-bs-toggle="dropdown" aria-expanded="false">
+                                Manage
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                <a class="dropdown-item" asp-controller="Account"
+                                   asp-action="ListUsers">Users</a>
+                                <a class="dropdown-item" asp-controller="Account"
+                                   asp-action="ListRoles">Roles</a>
+                            </ul>
+                        </li>
+                    }
+                    </ul>
                     <ul class="navbar-nav ml-auto">
                         @*If the user is signed-in display Logout link*@
                         @if (SignInManager.IsSignedIn(User))
