@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/ASPNETCoreIdentityDemo.styles.css" asp-append-version="true" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
 </head>
 <body>
     <header>
@@ -102,6 +103,43 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <!-- Toastr CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet">
+
+    <!-- Toastr JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+
+@{
+    ViewBag.Title = "All Users";
+}
+
+@{
+    var toastrMessages = new Dictionary<string, string>
+    {
+        { "WarningMessage", "warning" },
+        { "SuccessMessage", "success" },
+        { "ErrorMessage", "error" }
+    };
+}
+
+@if (toastrMessages.Any(m => TempData[m.Key] != null))
+{
+    <script>
+        // Справа снизу
+        toastr.options.positionClass = 'toast-bottom-right';
+
+        @foreach (var message in toastrMessages)
+        {
+            if (TempData[message.Key] != null)
+            {
+                <text>toastr.@(message.Value)("@TempData[message.Key]");</text>
+            }
+        }
+    </script>
+}
+
+}

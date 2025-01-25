@@ -335,5 +335,35 @@ namespace ByeBye.Controllers
                 return View("ListUsers");
             }
         }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(string userId)
+        {
+            var user = await userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            // Заранее определенный скрытый пароль
+            string fixedPassword = "YourSecretFixedPassword123!";
+
+            // Генерируем токен для сброса пароля
+            var resetToken = await userManager.GeneratePasswordResetTokenAsync(user);
+
+            // Сбрасываем пароль
+            var result = await userManager.ResetPasswordAsync(user, resetToken, fixedPassword);
+
+            if (result.Succeeded)
+            {
+                TempData["SuccessMessage"] = $"Пароль для {user.UserName} успешно сброшен";
+                return RedirectToAction("ListUsers", "Account");
+            }
+
+            TempData["ErrorMessage"] = "Не удалось сбросить пароль";
+            return RedirectToAction("ListUsers", "Account");
+        }
+
     }
 }
