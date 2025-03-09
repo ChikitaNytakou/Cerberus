@@ -6,9 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Security.Claims;
 using System.Xml;
-
-
-
 using ByeBye.Data;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -199,15 +196,16 @@ namespace ByeBye.Controllers
             // Рассчитываем результат
             var result = (model.Plan > 0 && totalFactPkm > 0) ? (totalFactTkm / totalFactPkm * 1000) / model.Plan * 100 : 0;
 
-            if (existingEntries.Count == 0)
+
+            if (existingEntries.Count == 0 && model.Id.Count == 1)
             {
-                // Если записи не существует, создаем новую
+                // Если записи не существует и это одинарный полигон, создаем новую
                 var newSrVesCoFour = new SrVesGrPoezdaCoFour
                 {
                     Start = new DateTime(model.Year, model.Month, 1),
                     Plan = model.Plan,
-                    FactTkm = model.FactTkm[0] != 0 ? model.FactTkm[0] : model.FactTkm[1], // Устанавливаем первую фактическую ТКМ
-                    FactPkm = model.FactPkm[0] != 0 ? model.FactPkm[0] : model.FactPkm[1], // Устанавливаем первую фактическую ПКМ
+                    FactTkm = model.FactTkm[0],
+                    FactPkm = model.FactPkm[0],
                     Fact = fact,
                     Result = result,
                     LastUpdated = DateTime.UtcNow,
@@ -215,9 +213,38 @@ namespace ByeBye.Controllers
                 };
                 await _context.SrVesGrPoezdaCoFour.AddAsync(newSrVesCoFour);
             }
+            else if (existingEntries.Count == 0 && model.Id.Count == 2)
+            {
+                // Если записи не существует и это соединённый полигон, создаем две новых записи
+                var newSrVesCoFour1 = new SrVesGrPoezdaCoFour
+                {
+                    Start = new DateTime(model.Year, model.Month, 1),
+                    Plan = model.Plan,
+                    FactTkm = model.FactTkm[0],
+                    FactPkm = model.FactPkm[0],
+                    Fact = fact,
+                    Result = result,
+                    LastUpdated = DateTime.UtcNow,
+                    PolygonId = model.Polygon
+                };
+                await _context.SrVesGrPoezdaCoFour.AddAsync(newSrVesCoFour1);
+
+                var newSrVesCoFour2 = new SrVesGrPoezdaCoFour
+                {
+                    Start = new DateTime(model.Year, model.Month, 1),
+                    Plan = model.Plan,
+                    FactTkm = model.FactTkm[1],
+                    FactPkm = model.FactPkm[1],
+                    Fact = fact,
+                    Result = result,
+                    LastUpdated = DateTime.UtcNow,
+                    PolygonId = model.Polygon
+                };
+                await _context.SrVesGrPoezdaCoFour.AddAsync(newSrVesCoFour2);
+            }
             else
             {
-                // Обновляем существующие записи
+                // Обновляем существующую(ие) запись(и)
                 foreach (var entry in existingEntries)
                 {
                     entry.Plan = model.Plan;
@@ -226,41 +253,16 @@ namespace ByeBye.Controllers
                     entry.LastUpdated = DateTime.UtcNow;
 
                     // Обновляем FactTkm и FactPkm в зависимости от ID
-                    entry.FactTkm = entry.Id == model.Id[0] ? model.FactTkm[0] : model?.FactTkm[1] ?? 0;
-                    entry.FactPkm = entry.Id == model.Id[0] ? model.FactPkm[0] : model?.FactPkm[1] ?? 0;
+                    entry.FactTkm = entry.Id == model.Id[0] ? model.FactTkm[0] : model.FactTkm[1];
+                    entry.FactPkm = entry.Id == model.Id[0] ? model.FactPkm[0] : model.FactPkm[1];
 
-                    if (entry.Plan == 0 && entry.FactTkm == 0 && entry.FactPkm == 0)
+                    if (model.Id.Count == 1 && entry.Plan == 0 && entry.FactTkm == 0 && entry.FactPkm == 0)
                     {
                         _context.SrVesGrPoezdaCoFour.Remove(entry);
                     }
-                }
-
-                // Если существует одна запись, создаем еще одну
-                if (existingEntries.Count == 1 && existingEntries[0].Plan != 0 && existingEntries[0].FactTkm != 0 && existingEntries[0].FactPkm != 0)
-                {
-                    //// временно ////
-                    // Получаем код полигона только если polygonId задан
-                    var polygonKod = _context.Polygons
-                        .AsNoTracking()
-                        .Where(p => p.Id == existingEntries[0].PolygonId)
-                        .Select(p => p.Kod)
-                        .FirstOrDefault();
-
-                    if (polygonKod.Contains(','))
-                    //// временно ////
+                    if (model.Id.Count == 2 && model.Plan == 0 && model.FactTkm[0] == 0 && model.FactPkm[0] == 0 && model.FactTkm[1] == 0 && model.FactPkm[1] == 0)
                     {
-                        var newSrVesCoFour = new SrVesGrPoezdaCoFour
-                        {
-                            Start = new DateTime(model.Year, model.Month, 1),
-                            Plan = model.Plan,
-                            FactTkm = model.FactTkm[1], // Устанавливаем другую фактическую ТКМ
-                            FactPkm = model.FactPkm[1], // Устанавливаем другую фактическую ПКМ
-                            Fact = fact,
-                            Result = result,
-                            LastUpdated = DateTime.UtcNow,
-                            PolygonId = model.Polygon
-                        };
-                        await _context.SrVesGrPoezdaCoFour.AddAsync(newSrVesCoFour);
+                        _context.SrVesGrPoezdaCoFour.Remove(entry);
                     }
                 }
             }

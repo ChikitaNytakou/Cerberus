@@ -133,131 +133,267 @@
     }
 
     function toggleEditMode(button, index, isEditing = true) {
-        const month = button.id.split('-')[1];
-        const row = button.closest('tr');
-        const planInput = row.querySelector('.plan-input');
-        const factTkmInput = row.querySelector(`.factTkm-input-${index}`);
-        const factPkmInput = row.querySelector(`.factPkm-input-${index}`);
-        const planValue = row.querySelector('.plan-value');
-        const factTkmValue = row.querySelector(`.factTkm-value-${index}`);
-        const factPkmValue = row.querySelector(`.factPkm-value-${index}`);
+        if (index === 1) {
+            const month = button.id.split('-')[1];
+            const row = button.closest('tr');
+            const planInput = row.querySelector('.plan-input');
+            const factTkmInput0 = row.querySelector(`.factTkm-input-0`);
+            const factTkmInput1 = row.querySelector(`.factTkm-input-1`);
+            const factPkmInput0 = row.querySelector(`.factPkm-input-0`);
+            const factPkmInput1 = row.querySelector(`.factPkm-input-1`);
+            const planValue = row.querySelector('.plan-value');
+            const factTkmValue0 = row.querySelector(`.factTkm-value-0`);
+            const factTkmValue1 = row.querySelector(`.factTkm-value-1`);
+            const factPkmValue0 = row.querySelector(`.factPkm-value-0`);
+            const factPkmValue1 = row.querySelector(`.factPkm-value-1`);
 
-        if (isEditing) {
-            // Включаем режим редактирования
-            planValue.style.display = 'none';
-            factTkmValue.style.display = 'none';
-            factPkmValue.style.display = 'none';
-            planInput.style.display = 'inline';
-            factTkmInput.style.display = 'inline';
-            factPkmInput.style.display = 'inline';
+            if (isEditing) {
+                // Включаем режим редактирования
+                planValue.style.display = 'none';
+                factTkmValue0.style.display = 'none';
+                factTkmValue1.style.display = 'none';
+                factPkmValue0.style.display = 'none';
+                factPkmValue1.style.display = 'none';
+                planInput.style.display = 'inline';
+                factTkmInput0.style.display = 'inline';
+                factTkmInput1.style.display = 'inline';
+                factPkmInput0.style.display = 'inline';
+                factPkmInput1.style.display = 'inline';
 
-            // Заполняем поля ввода значениями
-            planInput.value = planValue.innerText;
-            factTkmInput.value = factTkmValue.innerText;
-            factPkmInput.value = factPkmValue.innerText;
+                // Заполняем поля ввода значениями
+                planInput.value = planValue.innerText;
+                factTkmInput0.value = factTkmValue0.innerText;
+                factTkmInput1.value = factTkmValue1.innerText;
+                factPkmInput0.value = factPkmValue0.innerText;
+                factPkmInput1.value = factPkmValue1.innerText;
 
-            row.querySelector(`#editButton-${month}-${index}`).style.display = 'none';
-            row.querySelector(`#saveButton-${month}-${index}`).style.display = 'inline-block';
-            row.querySelector(`#cancelButton-${month}-${index}`).style.display = 'inline-block';
-        } else {
-            // Выключаем режим редактирования
-            planInput.style.display = 'none';
-            factTkmInput.style.display = 'none';
-            factPkmInput.style.display = 'none';
+                row.querySelector(`#editButton-${month}-${index}`).style.display = 'none';
+                row.querySelector(`#saveButton-${month}-${index}`).style.display = 'inline-block';
+                row.querySelector(`#cancelButton-${month}-${index}`).style.display = 'inline-block';
+            } else {
+                // Выключаем режим редактирования
+                planInput.style.display = 'none';
+                factTkmInput0.style.display = 'none';
+                factTkmInput1.style.display = 'none';
+                factPkmInput0.style.display = 'none';
+                factPkmInput1.style.display = 'none';
 
-            row.querySelector(`#editButton-${month}-${index}`).style.display = 'inline-block';
-            row.querySelector(`#saveButton-${month}-${index}`).style.display = 'none';
-            row.querySelector(`#cancelButton-${month}-${index}`).style.display = 'none';
+                row.querySelector(`#editButton-${month}-${index}`).style.display = 'inline-block';
+                row.querySelector(`#saveButton-${month}-${index}`).style.display = 'none';
+                row.querySelector(`#cancelButton-${month}-${index}`).style.display = 'none';
 
-            planValue.style.display = 'inline';
-            factTkmValue.style.display = 'inline';
-            factPkmValue.style.display = 'inline';
+                planValue.style.display = 'inline';
+                factTkmValue0.style.display = 'inline';
+                factTkmValue1.style.display = 'inline';
+                factPkmValue0.style.display = 'inline';
+                factPkmValue1.style.display = 'inline';
+            }
+        }
+        else {
+            const month = button.id.split('-')[1];
+            const row = button.closest('tr');
+            const planInput = row.querySelector('.plan-input');
+            const factTkmInput = row.querySelector(`.factTkm-input-${index}`);
+            const factPkmInput = row.querySelector(`.factPkm-input-${index}`);
+            const planValue = row.querySelector('.plan-value');
+            const factTkmValue = row.querySelector(`.factTkm-value-${index}`);
+            const factPkmValue = row.querySelector(`.factPkm-value-${index}`);
+
+            if (isEditing) {
+                // Включаем режим редактирования
+                planValue.style.display = 'none';
+                factTkmValue.style.display = 'none';
+                factPkmValue.style.display = 'none';
+                planInput.style.display = 'inline';
+                factTkmInput.style.display = 'inline';
+                factPkmInput.style.display = 'inline';
+
+                // Заполняем поля ввода значениями
+                planInput.value = planValue.innerText;
+                factTkmInput.value = factTkmValue.innerText;
+                factPkmInput.value = factPkmValue.innerText;
+
+                row.querySelector(`#editButton-${month}-${index}`).style.display = 'none';
+                row.querySelector(`#saveButton-${month}-${index}`).style.display = 'inline-block';
+                row.querySelector(`#cancelButton-${month}-${index}`).style.display = 'inline-block';
+            } else {
+                // Выключаем режим редактирования
+                planInput.style.display = 'none';
+                factTkmInput.style.display = 'none';
+                factPkmInput.style.display = 'none';
+
+                row.querySelector(`#editButton-${month}-${index}`).style.display = 'inline-block';
+                row.querySelector(`#saveButton-${month}-${index}`).style.display = 'none';
+                row.querySelector(`#cancelButton-${month}-${index}`).style.display = 'none';
+
+                planValue.style.display = 'inline';
+                factTkmValue.style.display = 'inline';
+                factPkmValue.style.display = 'inline';
+            }
         }
     }
 
     function handleSaveButtonClick(button, index) {
-        const month = button.id.split('-')[1];
-        const row = button.closest('tr');
-        const planInput = row.querySelector('.plan-input');
-        const factTkmInput = row.querySelector(`.factTkm-input-${index}`);
-        const factPkmInput = row.querySelector(`.factPkm-input-${index}`);
-        const polygonInput = row.querySelector('.polygon-input');
+        if (index === 1) {
+            const month = button.id.split('-')[1];
+            const row = button.closest('tr');
+            const planInput = row.querySelector('.plan-input');
+            const factTkmInput0 = row.querySelector(`.factTkm-input-0`);
+            const factTkmInput1 = row.querySelector(`.factTkm-input-1`);
+            const factPkmInput0 = row.querySelector(`.factPkm-input-0`);
+            const factPkmInput1 = row.querySelector(`.factPkm-input-1`);
+            const polygonInput = row.querySelector('.polygon-input');
 
-        // Создаем массивы для FactTkm и FactPkm
-        let factTkmArray = [];
-        let factPkmArray = [];
-        let idArray = []; // Массив для идентификаторов
+            // Создаем массивы для FactTkm и FactPkm
+            let factTkmArray = [];
+            let factPkmArray = [];
+            let idArray = []; // Массив для идентификаторов
 
-        // Находим все строки таблицы
-        const rows = document.querySelectorAll('tr');
+            // Находим все строки таблицы
+            const rows = document.querySelectorAll('tr');
 
-        rows.forEach((currentRow) => {
-            // Проверяем, есть ли кнопка с id, содержащим editButton и текущий месяц
-            const editButton = currentRow.querySelector(`[id^="editButton-${month}-"]`);
-            if (editButton) { // Если кнопка найдена
-                const FactTkm1 = parseFloat(currentRow.querySelector(`.factTkm-input-${0}`).value);
-                const FactPkm1 = parseFloat(currentRow.querySelector(`.factPkm-input-${0}`).value);
+            rows.forEach((currentRow) => {
+                // Проверяем, есть ли кнопка с id, содержащим editButton и текущий месяц
+                const editButton = currentRow.querySelector(`[id^="editButton-${month}-"]`);
+                if (editButton) { // Если кнопка найдена
+                    const FactTkm0 = parseFloat(currentRow.querySelector(`.factTkm-input-0`).value);
+                    const FactTkm1 = parseFloat(currentRow.querySelector(`.factTkm-input-1`).value);
+                    const FactPkm0 = parseFloat(currentRow.querySelector(`.factPkm-input-0`).value);
+                    const FactPkm1 = parseFloat(currentRow.querySelector(`.factPkm-input-1`).value);
 
-                if (hasMultiplePolygonIds === 'true') {
-                    const FactTkm2 = parseFloat(currentRow.querySelector(`.factTkm-input-${1}`).value);
-                    const FactPkm2 = parseFloat(currentRow.querySelector(`.factPkm-input-${1}`).value);
-                    if (!isNaN(FactTkm2)) {
-                        factTkmArray.push(FactTkm2);
+                    if (!isNaN(FactTkm0)) {
+                        factTkmArray.push(FactTkm0);
                     }
 
-                    if (!isNaN(FactPkm2)) {
-                        factPkmArray.push(FactPkm2);
+                    if (!isNaN(FactTkm1)) {
+                        factTkmArray.push(FactTkm1);
                     }
-                }
 
-                if (!isNaN(FactTkm1)) {
-                    factTkmArray.push(FactTkm1);
-                }
+                    if (!isNaN(FactPkm0)) {
+                        factPkmArray.push(FactPkm0);
+                    }
 
-                if (!isNaN(FactPkm1)) {
-                    factPkmArray.push(FactPkm1);
-                }
+                    if (!isNaN(FactPkm1)) {
+                        factPkmArray.push(FactPkm1);
+                    }
 
 
-                // Извлечение идентификаторов
-                const idInputs = currentRow.querySelectorAll('.id-input');
-                idInputs.forEach(input => {
-                    idArray.push(input.value);
-                });
-            }
-        });
-
-        if (confirm('Вы уверены, что хотите изменить значение?')) {
-            const plan = parseFloat(planInput.value);
-            const factTkm = parseFloat(factTkmInput.value);
-            const factPkm = parseFloat(factPkmInput.value);
-            const polygonId = polygonInput.value; // Получаем значение полигона
-
-            // Проверка на пустые и отрицательные значения
-            if (validateInputs(plan, factTkm, factPkm)) {
-                // AJAX-запрос для сохранения данных
-                fetch(`/SrVesGrPoezdaCoFour/SaveSrVesGrPoezdaCoFour`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        Year: selectedYear,
-                        Month: month,
-                        Polygon: polygonId,
-                        Plan: plan,
-                        FactTkm: factTkmArray, // Передаем массив
-                        FactPkm: factPkmArray, // Передаем массив
-                        Id: idArray // Передаем массив идентификаторов
-                    })
-                })
-                    .then(response => {
-                        if (response.ok) {
-                            updateValues(row, plan, factTkm, factPkm, index);
-                            toggleEditMode(button, index, false);
-                            window.location.reload(); // Обновление страницы
-                        }
+                    // Извлечение идентификаторов
+                    const idInputs = currentRow.querySelectorAll('.id-input');
+                    idInputs.forEach(input => {
+                        idArray.push(input.value);
                     });
+                }
+            });
+
+            if (confirm('Вы уверены, что хотите изменить значение?')) {
+                const plan = parseFloat(planInput.value);
+                const factTkm0 = parseFloat(factTkmInput0.value);
+                const factTkm1 = parseFloat(factTkmInput1.value);
+                const factPkm0 = parseFloat(factPkmInput0.value);
+                const factPkm1 = parseFloat(factPkmInput1.value);
+                const polygonId = polygonInput.value; // Получаем значение полигона
+
+                // Проверка на пустые и отрицательные значения
+                if (validateInputsFive(plan, factTkm0, factTkm1, factPkm0, factPkm1)) {
+                    // AJAX-запрос для сохранения данных
+                    fetch(`/SrVesGrPoezdaCoFour/SaveSrVesGrPoezdaCoFour`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            Year: selectedYear,
+                            Month: month,
+                            Polygon: polygonId,
+                            Plan: plan,
+                            FactTkm: factTkmArray, // Передаем массив
+                            FactPkm: factPkmArray, // Передаем массив
+                            Id: idArray // Передаем массив идентификаторов
+                        })
+                    })
+                        .then(response => {
+                            if (response.ok) {
+                                updateValuesFive(row, plan, factTkm0, factTkm1, factPkm0, factPkm1);
+                                toggleEditMode(button, index, false);
+                                window.location.reload(); // Обновление страницы
+                            }
+                        });
+                }
+            }
+        }
+        else {
+            const month = button.id.split('-')[1];
+            const row = button.closest('tr');
+            const planInput = row.querySelector('.plan-input');
+            const factTkmInput = row.querySelector(`.factTkm-input-${index}`);
+            const factPkmInput = row.querySelector(`.factPkm-input-${index}`);
+            const polygonInput = row.querySelector('.polygon-input');
+
+            // Создаем массивы для FactTkm и FactPkm
+            let factTkmArray = [];
+            let factPkmArray = [];
+            let idArray = []; // Массив для идентификаторов
+
+            // Находим все строки таблицы
+            const rows = document.querySelectorAll('tr');
+
+            rows.forEach((currentRow) => {
+                // Проверяем, есть ли кнопка с id, содержащим editButton и текущий месяц
+                const editButton = currentRow.querySelector(`[id^="editButton-${month}-"]`);
+                if (editButton) { // Если кнопка найдена
+                    const FactTkm1 = parseFloat(currentRow.querySelector(`.factTkm-input-${0}`).value);
+                    const FactPkm1 = parseFloat(currentRow.querySelector(`.factPkm-input-${0}`).value);
+
+                    if (!isNaN(FactTkm1)) {
+                        factTkmArray.push(FactTkm1);
+                    }
+
+                    if (!isNaN(FactPkm1)) {
+                        factPkmArray.push(FactPkm1);
+                    }
+
+
+                    // Извлечение идентификаторов
+                    const idInputs = currentRow.querySelectorAll('.id-input');
+                    idInputs.forEach(input => {
+                        idArray.push(input.value);
+                    });
+                }
+            });
+
+            if (confirm('Вы уверены, что хотите изменить значение?')) {
+                const plan = parseFloat(planInput.value);
+                const factTkm = parseFloat(factTkmInput.value);
+                const factPkm = parseFloat(factPkmInput.value);
+                const polygonId = polygonInput.value; // Получаем значение полигона
+
+                // Проверка на пустые и отрицательные значения
+                if (validateInputs(plan, factTkm, factPkm)) {
+                    // AJAX-запрос для сохранения данных
+                    fetch(`/SrVesGrPoezdaCoFour/SaveSrVesGrPoezdaCoFour`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            Year: selectedYear,
+                            Month: month,
+                            Polygon: polygonId,
+                            Plan: plan,
+                            FactTkm: factTkmArray, // Передаем массив
+                            FactPkm: factPkmArray, // Передаем массив
+                            Id: idArray // Передаем массив идентификаторов
+                        })
+                    })
+                        .then(response => {
+                            if (response.ok) {
+                                updateValues(row, plan, factTkm, factPkm, index);
+                                toggleEditMode(button, index, false);
+                                window.location.reload(); // Обновление страницы
+                            }
+                        });
+                }
             }
         }
     }
@@ -268,13 +404,38 @@
             return false;
         }
         if (isNaN(factTkm) || factTkm < 0) {
-            alert('Пожалуйста, введите корректное значение для Факта (не меньше 0).');
+            alert('Пожалуйста, введите корректное значение для Факта (ткм) (не меньше 0).');
             return false;
         }
         if (isNaN(factPkm) || factPkm < 0) {
-            alert('Пожалуйста, введите корректное значение для Факта (не меньше 0).');
+            alert('Пожалуйста, введите корректное значение для Факта (пкм) (не меньше 0).');
             return false;
         }
+        return true;
+    }
+
+    function validateInputsFive(plan, factTkm0, factTkm1, factPkm0, factPkm1) {
+        if (isNaN(plan) || plan < 0) {
+            alert('Пожалуйста, введите корректное значение для Плана (не меньше 0).');
+            return false;
+        }
+        if (isNaN(factTkm0) || factTkm0 < 0) {
+            alert('Пожалуйста, введите корректное значение для Факта (ткм) 1 (не меньше 0).');
+            return false;
+        }
+        if (isNaN(factTkm1) || factTkm1 < 0) {
+            alert('Пожалуйста, введите корректное значение для Факта (ткм) 2 (не меньше 0).');
+            return false;
+        }
+        if (isNaN(factPkm0) || factPkm0 < 0) {
+            alert('Пожалуйста, введите корректное значение для Факта (пкм) 1 (не меньше 0).');
+            return false;
+        }
+        if (isNaN(factPkm1) || factPkm1 < 0) {
+            alert('Пожалуйста, введите корректное значение для Факта (пкм) 2 (не меньше 0).');
+            return false;
+        }
+
         return true;
     }
 
@@ -285,9 +446,19 @@
         // Обновите значения факта и результата здесь, если они есть
     }
 
-    // Инициализация обработчиков для обеих групп кнопок
-    setupButtonHandlers(0);
+    function updateValuesFive(row, plan, factTkm0, factTkm1, factPkm0, factPkm1) {
+        row.querySelector('.plan-value').innerText = plan;
+        row.querySelector(`.factTkm-value-0`).innerText = factTkm0;
+        row.querySelector(`.factTkm-value-1`).innerText = factTkm1;
+        row.querySelector(`.factPkm-value-0`).innerText = factPkm0;
+        row.querySelector(`.factPkm-value-1`).innerText = factPkm1;
+        // Обновите значения факта и результата здесь, если они есть
+    }
+
     if (hasMultiplePolygonIds === 'true') {
         setupButtonHandlers(1);
+    }
+    else {
+        setupButtonHandlers(0);
     }
 });

@@ -9,7 +9,6 @@
 	int currentYear = DateTime.Now.Year;
 	int selectedYear = ViewBag.SelectedYear != null ? (int)ViewBag.SelectedYear : currentYear;
 	int selectedPolygon = ViewBag.PolygonId;
-	// List<int> polygonIds = ViewBag.PolygonIds;
 	bool HasMultiplePolygonIds = ViewBag.HasMultiplePolygonIds;
 }
 
@@ -64,7 +63,7 @@
 	<tbody id="tableBody">
 		@for (int month = 1; month <= 12; month++)
 		{
-			var exportData = Model.FirstOrDefault(x => x.Month == month) ??
+			var coFourData = Model.FirstOrDefault(x => x.Month == month) ??
 			(HasMultiplePolygonIds
 			?
 			new SrVesGrPoezdaCoFourViewModel
@@ -92,101 +91,103 @@
 				});
 
 			// Если существует элемент и его Id.Count равно 1 и HasMultiplePolygonIds == true, добавляем 0 к FactTkm
-			if (exportData.Id.Count == 1 && HasMultiplePolygonIds)
+			if (coFourData.Id.Count == 1 && HasMultiplePolygonIds)
 			{
-				exportData.Id.Add(0); // Добавляем 0 к списку FactTkm
-				exportData.FactTkm.Add(0); // Добавляем 0 к списку FactTkm
-				exportData.FactPkm.Add(0); // Добавляем 0 к списку FactTkm
+				coFourData.Id.Add(0); // Добавляем 0 к списку FactTkm
+				coFourData.FactTkm.Add(0); // Добавляем 0 к списку FactTkm
+				coFourData.FactPkm.Add(0); // Добавляем 0 к списку FactTkm
 			}
 
 			<tr align="center">
-				<td>@exportData.Month</td>
+				<td>@coFourData.Month</td>
 				<td>
-					@if (exportData.Plan != 0)
+					@if (coFourData.Plan != 0)
 					{
-						<div style="background-color: #9dbefb" class="editable-cell" data-month="@exportData.Month" data-year="@selectedYear">
-							<span class="plan-value">@exportData.Plan</span>
-							<input type="number" class="plan-input" style="display: none; width: 50%" value="@exportData.Plan" />
+						<div style="background-color: #9dbefb" class="editable-cell" data-month="@coFourData.Month" data-year="@selectedYear">
+							<span class="plan-value">@coFourData.Plan</span>
+							<input type="number" class="plan-input" style="display: none; width: 50%" value="@coFourData.Plan" />
 						</div>
 					}
 					else
 					{
 						<div>
-							<span class="plan-value">@exportData.Plan</span>
-							<input type="number" class="plan-input" style="display: none; width: 50%" value="@exportData.Plan" />
+							<span class="plan-value">@coFourData.Plan</span>
+							<input type="number" class="plan-input" style="display: none; width: 50%" value="@coFourData.Plan" />
 						</div>
 					}
 				</td>
 				<td>
-					@for (int i = 0; i < exportData.FactTkm.Count; i++)
+					@for (int i = 0; i < coFourData.FactTkm.Count; i++)
 					{
 						if (i > 0)
 						{
 							<hr />
 						} // Добавляем горизонтальную линию между значениями
-						if (exportData.FactTkm[i] != 0)
+						if (coFourData.FactTkm[i] != 0)
 						{
-							<div style="background-color: #9dbefb" class="editable-cell" data-month="@exportData.Month" data-year="@selectedYear">
-								<span class="factTkm-value-@i">@exportData.FactTkm[i]</span>
-								<input type="number" class="factTkm-input-@i" style="display: none; width: 50%" value="@exportData.FactTkm[i]" />
+							<div style="background-color: #9dbefb" class="editable-cell" data-month="@coFourData.Month" data-year="@selectedYear">
+								<span class="factTkm-value-@i">@coFourData.FactTkm[i]</span>
+								<input type="number" class="factTkm-input-@i" style="display: none; width: 50%" value="@coFourData.FactTkm[i]" />
 							</div>
 						}
 						else
 						{
 							<div>
-								<span class="factTkm-value-@i">@exportData.FactTkm[i]</span>
-								<input type="number" class="factTkm-input-@i" style="display: none; width: 50%" value="@exportData.FactTkm[i]" />
+								<span class="factTkm-value-@i">@coFourData.FactTkm[i]</span>
+								<input type="number" class="factTkm-input-@i" style="display: none; width: 50%" value="@coFourData.FactTkm[i]" />
 							</div>
 						}
 					}
 				</td>
 				<td>
-					@for (int j = 0; j < exportData.FactPkm.Count; j++)
+					@for (int j = 0; j < coFourData.FactPkm.Count; j++)
 					{
 						if (j > 0)
 						{
 							<hr />
 						} // Добавляем горизонтальную линию между значениями
-						if (exportData.FactPkm[j] != 0)
+						if (coFourData.FactPkm[j] != 0)
 						{
-							<div style="background-color: #9dbefb" class="editable-cell" data-month="@exportData.Month" data-year="@selectedYear">
-								<span class="factPkm-value-@j">@exportData.FactPkm[j]</span>
-								<input type="number" class="factPkm-input-@j" style="display: none; width: 50%" value="@exportData.FactPkm[j]" />
+							<div style="background-color: #9dbefb" class="editable-cell" data-month="@coFourData.Month" data-year="@selectedYear">
+								<span class="factPkm-value-@j">@coFourData.FactPkm[j]</span>
+								<input type="number" class="factPkm-input-@j" style="display: none; width: 50%" value="@coFourData.FactPkm[j]" />
 							</div>
 						}
 						else
 						{
 							<div>
-								<span class="factPkm-value-@j">@exportData.FactPkm[j]</span>
-								<input type="number" class="factPkm-input-@j" style="display: none; width: 50%" value="@exportData.FactPkm[j]" />
+								<span class="factPkm-value-@j">@coFourData.FactPkm[j]</span>
+								<input type="number" class="factPkm-input-@j" style="display: none; width: 50%" value="@coFourData.FactPkm[j]" />
 							</div>
 						}
 					}
 				</td>
 
-				<td class="fact-value">@exportData.Fact.ToString("F2")</td>
+				<td class="fact-value">@coFourData.Fact.ToString("F2")</td>
 
-				<td class="result-value">@exportData.Result.ToString("F2")</td>
+				<td class="result-value">@coFourData.Result.ToString("F2")</td>
 
 				<!-- Скрытое поле для сохранения идентификатора полигона -->
-				<input type="hidden" class="polygon-input" value="@exportData.Polygon" />
+				<input type="hidden" class="polygon-input" value="@coFourData.Polygon" />
 
 				<!-- Скрытые поля для хранения идентификаторов -->
-				@for (int k = 0; k < exportData.Id.Count; k++)
+				@for (int k = 0; k < coFourData.Id.Count; k++)
 				{
-					<input type="hidden" class="id-input" value="@exportData.Id[k]" />
+					<input type="hidden" class="id-input" value="@coFourData.Id[k]" />
 				}
 
 				<td>
-					@for (int k = 0; k < exportData.Id.Count; k++)
+					@if (HasMultiplePolygonIds)
 					{
-						if (k > 0)
-						{
-							<hr />
-						} // Добавляем горизонтальную линию между значениями
-						<button class="edit-button edit-btn-@k btn btn-primary" id="editButton-@month-@k">Изменить</button>
-						<button class="save-button save-btn-@k btn btn-success" id="saveButton-@month-@k" style="display: none;">Сохранить</button>
-						<button class="cancel-button cancel-btn-@k btn btn-warning" id="cancelButton-@month-@k" style="display: none;">Отменить</button>
+						<button class="edit-button edit-btn-1 btn btn-primary" id="editButton-@month-1">Изменить</button>
+						<button class="save-button save-btn-1 btn btn-success" id="saveButton-@month-1" style="display: none;">Сохранить</button>
+						<button class="cancel-button cancel-btn-1 btn btn-warning" id="cancelButton-@month-1" style="display: none;">Отменить</button>
+					}
+					else
+					{
+						<button class="edit-button edit-btn-0 btn btn-primary" id="editButton-@month-0">Изменить</button>
+						<button class="save-button save-btn-0 btn btn-success" id="saveButton-@month-0" style="display: none;">Сохранить</button>
+						<button class="cancel-button cancel-btn-0 btn btn-warning" id="cancelButton-@month-0" style="display: none;">Отменить</button>
 					}
 				</td>
 			</tr>
