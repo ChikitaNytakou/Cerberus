@@ -98,41 +98,33 @@
         });
     });
 
-    if (hasMultiplePolygonIds === 'true') {
-        // Добавляем обработчик события для всех input'ов
-        const inputs = document.querySelectorAll('.plan-input, .factTkm-input-0, .factPkm-input-0, .factTkm-input-1, .factPkm-input-1');
-        inputs.forEach(input => {
-            input.addEventListener('click', function (event) {
-                event.stopPropagation(); // Останавливаем распространение события
-            });
+    const inputSelector = hasMultiplePolygonIds === 'true'
+        ? '.plan-input, .factTkm-input-0, .factPkm-input-0, .factTkm-input-1, .factPkm-input-1'
+        : '.plan-input, .factTkm-input-0, .factPkm-input-0';
+
+    const inputs = document.querySelectorAll(inputSelector);
+    inputs.forEach(input => {
+        input.addEventListener('click', function (event) {
+            event.stopPropagation();
         });
-    }
-    else {
-        // Добавляем обработчик события для всех input'ов
-        const inputs = document.querySelectorAll('.plan-input, .factTkm-input-0, .factPkm-input-0');
-        inputs.forEach(input => {
-            input.addEventListener('click', function (event) {
-                event.stopPropagation(); // Останавливаем распространение события
-            });
-        });
-    }
-    
+    });
+
     function setupButtonHandlers(index) {
-        const editButtons = document.querySelectorAll(`.edit-button-${index}`);
+        const editButtons = document.querySelectorAll(`.edit-btn-${index}`);
         editButtons.forEach(button => {
             button.addEventListener('click', function () {
                 toggleEditMode(this, index);
             });
         });
 
-        const saveButtons = document.querySelectorAll(`.save-button-${index}`);
+        const saveButtons = document.querySelectorAll(`.save-btn-${index}`);
         saveButtons.forEach(button => {
             button.addEventListener('click', function () {
                 handleSaveButtonClick(this, index);
             });
         });
 
-        const cancelButtons = document.querySelectorAll(`.cancel-button-${index}`);
+        const cancelButtons = document.querySelectorAll(`.cancel-btn-${index}`);
         cancelButtons.forEach(button => {
             button.addEventListener('click', function () {
                 toggleEditMode(this, index, false);
@@ -295,5 +287,7 @@
 
     // Инициализация обработчиков для обеих групп кнопок
     setupButtonHandlers(0);
-    setupButtonHandlers(1);
+    if (hasMultiplePolygonIds === 'true') {
+        setupButtonHandlers(1);
+    }
 });
