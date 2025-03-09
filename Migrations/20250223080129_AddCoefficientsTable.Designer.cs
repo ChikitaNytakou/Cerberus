@@ -3,6 +3,7 @@ using System;
 using ByeBye.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ByeBye.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250223080129_AddCoefficientsTable")]
+    partial class AddCoefficientsTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -39,30 +42,6 @@ namespace ByeBye.Migrations
                     b.ToTable("Departments");
                 });
 
-            modelBuilder.Entity("ByeBye.Entities.Polygon", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Kod")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Polygons", (string)null);
-                });
-
             modelBuilder.Entity("ByeBye.Entities.Position", b =>
                 {
                     b.Property<int>("Id")
@@ -81,45 +60,6 @@ namespace ByeBye.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Positions");
-                });
-
-            modelBuilder.Entity("ByeBye.Entities.SrVesGrPoezdaCoFour", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<double>("Fact")
-                        .HasColumnType("double precision");
-
-                    b.Property<double>("FactPkm")
-                        .HasColumnType("double precision");
-
-                    b.Property<double>("FactTkm")
-                        .HasColumnType("double precision");
-
-                    b.Property<DateTime?>("LastUpdated")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<double>("Plan")
-                        .HasColumnType("double precision");
-
-                    b.Property<int>("PolygonId")
-                        .HasColumnType("integer");
-
-                    b.Property<double>("Result")
-                        .HasColumnType("double precision");
-
-                    b.Property<DateTime>("Start")
-                        .HasColumnType("date");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PolygonId");
-
-                    b.ToTable("SrVesGrPoezdaCoFour", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -384,17 +324,6 @@ namespace ByeBye.Migrations
                     b.HasIndex("PositionId");
 
                     b.ToTable("AspNetUsers", (string)null);
-                });
-
-            modelBuilder.Entity("ByeBye.Entities.SrVesGrPoezdaCoFour", b =>
-                {
-                    b.HasOne("ByeBye.Entities.Polygon", "Polygon")
-                        .WithMany()
-                        .HasForeignKey("PolygonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Polygon");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

@@ -9,7 +9,6 @@
     <title>@ViewData["Title"] - ByeBye</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/ASPNETCoreIdentityDemo.styles.css" asp-append-version="true" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
 </head>
 <body>
@@ -35,6 +34,13 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-controller="Home" asp-action="NonSecureMethod">Non Secure</a>
                         </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="SrVesGrPoezdaCoFour" asp-action="SrVesGrPoezdaCoFour">ДГПС</a>
+                        </li>
+                        @* <li class="nav-item"> *@
+                        @*     <button style="margin-left: 20px;" class="btn btn-primary" onclick="location.href='@Url.Action("SeedCoefficients_rew", "Coefficient")'" title="Проверяем, что в таблице Коэффициенты точно есть данные">Таблица Коэффициентов</button> *@
+                        @* </li> *@
                     </ul>
                     @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
                     {
@@ -140,6 +146,4 @@
             }
         }
     </script>
-}
-
 }

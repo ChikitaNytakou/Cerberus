@@ -4,6 +4,8 @@
     ViewBag.Title = "User Login";
 }
 
+<link rel="stylesheet" href="~/css/login.css" asp-append-version="true" />
+
 <h1>User Login</h1>
 
 <div class="row">
@@ -13,12 +15,12 @@
             <div asp-validation-summary="All" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Login"></label>
-                <input asp-for="Login" class="form-control" autocomplete="off" />
+                <input asp-for="Login" class="form-control"/>
                 <span asp-validation-for="Login" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Password"></label>
-                <input asp-for="Password" class="form-control" autocomplete="off" />
+                <input asp-for="Password" class="form-control"/>
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
             <div class="form-group">

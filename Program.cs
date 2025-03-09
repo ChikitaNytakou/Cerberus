@@ -47,6 +47,13 @@ builder.Services.Configure<SecurityStampValidatorOptions>(options =>
 
 var app = builder.Build();
 
+//// "–азогрев" контекста: выполн€ем запрос, который ничего не выводит
+//using (var scope = app.Services.CreateScope())
+//{
+//    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+//    _ = dbContext.Users.AsNoTracking().Take(1).ToList(); // ѕростой запрос к базе данных
+//}
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
